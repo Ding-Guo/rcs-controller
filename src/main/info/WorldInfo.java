@@ -19,6 +19,8 @@ public class WorldInfo {
     private Map<StandardEntityURN, Collection<StandardEntity>> storedTypes = new EnumMap(StandardEntityURN.class);
     private double paverSpeed;
     private double paverY;
+    private double paverLY;
+    private double paverRY;
     private double rollerSpeed;
     private Config config;
     private boolean reRollerBegin;
@@ -37,7 +39,9 @@ public class WorldInfo {
     public void init(){
         this.rollerSpeed = Double.valueOf(this.config.getValue("Roller1-Speed"));
         this.paverSpeed = Double.valueOf(this.config.getValue("Paver-Speed"));
-        this.paverY = this.config.getIntValue("Paver-Y");
+//        this.paverY = this.config.getIntValue("Paver-Y");
+        this.paverLY = this.config.getIntValue("PaverL-Y");
+        this.paverRY = this.config.getIntValue("PaverR-Y");
         this.reRollerBegin = false;
         for (StandardEntity standardEntity : storedTypes.get(StandardEntityURN.ROLLER)) {
             Roller roller = (Roller) standardEntity;
@@ -59,7 +63,7 @@ public class WorldInfo {
                 }else {
                     for (StandardEntity standardEntity1 : storedTypes.get(StandardEntityURN.RIGHT_TRACK)) {
                         Track track = (Track) standardEntity1;
-                        if (track.getIndex() == 4) {
+                        if (track.getIndex() == 1) {
                             roller.setTrack(track);
                             roller.setX((track.getX()+track.getY())/2);
                         }
@@ -75,8 +79,14 @@ public class WorldInfo {
         if (input==null){
             return;
         }
-        if (this.paverY<this.getRoadLength()){
-            this.paverY += paverSpeed;
+//        if (this.paverY<this.getRoadLength()){
+//            this.paverY += paverSpeed;
+//        }
+        if (this.paverRY<this.getRoadLength()){
+            this.paverRY += paverSpeed;
+        }
+        if (this.paverLY < this.getRoadLength()){
+            this.paverLY += paverSpeed;
         }
 //        Action action = input.getAction();
         for (StandardEntity standardEntity : storedTypes.get(StandardEntityURN.ROLLER)){
@@ -97,7 +107,10 @@ public class WorldInfo {
                         roller.getTrack().addBackupReForwardPoint(roller.getY());
                         roller.getTrack().addBackupBreakpoint(roller.getY());
                         roller.getTrack().addBackupReBreakpoint(roller.getY());
-
+                        //保证复压的车的第一次前进结点
+                        if (roller.getTrack().getRollingTimes()==0){
+                            roller.getTrack().updateReForwardPoint();
+                        }
                         roller.getTrack().addRollingTimes();
                         if (this.isReRollerBegin()==false&&roller.getTrack().getRollingTimes()>=4){
                             this.setReRollerBegin(true);
@@ -271,7 +284,12 @@ public class WorldInfo {
     public double getPaverY(){
         return this.paverY;
     }
-
+    public double getPaverLY(){
+        return this.paverLY;
+    }
+    public double getPaverRY(){
+        return this.paverRY;
+    }
     public double getMaxDistanceFromRollerToPaver(){
         return Double.valueOf(this.config.getValue("MaxDistanceFromRollerToPaver"));
     }

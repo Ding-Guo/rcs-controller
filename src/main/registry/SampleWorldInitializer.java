@@ -52,6 +52,11 @@ public class SampleWorldInitializer extends WorldInitializer{
             double x = Double.valueOf(config.getValue(rollerX));
             double y = Double.valueOf(config.getValue(rollerY));
             double width = Double.valueOf(config.getValue(rollerWidth));
+            if (i==1||i==3){
+                roller.setReRoller(false);
+            }else if (i==2||i==4){
+                roller.setReRoller(true);
+            }
             roller.setX(x+width/2);
             roller.setY(y);
             roller.setWidth(width);

@@ -27,7 +27,9 @@ public class SamplePathPlanning extends PathPlanning{
     }
     @Override
     public PathPlanning calc() {
-        double paverY = this.worldInfo.getPaverY();
+//        double paverY = this.worldInfo.getPaverY();
+        double paverLY = this.worldInfo.getPaverLY();
+        double paverRY = this.worldInfo.getPaverRY();
         double maxDistanceFromRollerToPaver = this.worldInfo.getMaxDistanceFromRollerToPaver();
         Collection<StandardEntity> rollers = this.worldInfo.getAllRoller();
 
@@ -40,13 +42,22 @@ public class SamplePathPlanning extends PathPlanning{
             }
             if (roller.getAction()== Action.FORWARD){
                 if (roller.getIndex()==1||roller.getIndex()==3){
-                    if (paverY-roller.getY()<=maxDistanceFromRollerToPaver || roller.getY()>=worldInfo.getRoadLength()){
-                        result = Action.BACKWARD;
+                    if (roller.getIndex()==1){
+                        if (paverLY-roller.getY()<=maxDistanceFromRollerToPaver || roller.getY()>=worldInfo.getRoadLength()){
+                            result = Action.BACKWARD;
+                        }else {
+                            result = Action.FORWARD;
+                        }
                     }else {
-                        result = Action.FORWARD;
+                        if (paverRY-roller.getY()<=maxDistanceFromRollerToPaver || roller.getY()>=worldInfo.getRoadLength()){
+                            result = Action.BACKWARD;
+                        }else {
+                            result = Action.FORWARD;
+                        }
                     }
+
                 }else if (roller.getIndex()==2||roller.getIndex()==4){
-                    if (Math.abs(roller.getY() - roller.getTrack().getReForwardPoint())<0.1){
+                    if (Math.abs(roller.getY() - roller.getTrack().getReForwardPoint())<0.1||roller.getY()>=roller.getTrack().getReForwardPoint()){
                         result = Action.BACKWARD;
                     }else {
                         result = Action.FORWARD;
@@ -60,7 +71,7 @@ public class SamplePathPlanning extends PathPlanning{
                 if (Math.abs(roller.getY()-roller.getTrack().getBreakpoint(roller))<0.1){
                     if (roller.getTrack().getIndex()==1){
                         result = Action.RIGHT;
-                    }else if ((roller.getIndex()==1&&roller.getTrack().getIndex()==worldInfo.getLTrackNum())||(roller.getIndex()==3&&
+                    }else if (((roller.getIndex()==1||roller.getIndex()==2)&&roller.getTrack().getIndex()==worldInfo.getLTrackNum())||((roller.getIndex()==3||roller.getIndex()==4)&&
                             roller.getTrack().getIndex()==worldInfo.getRTrackNum())){
                         result = Action.LEFT;
                     }else {
@@ -81,13 +92,13 @@ public class SamplePathPlanning extends PathPlanning{
 
             }else if (roller.getAction()==Action.RIGHT){
 
-                if (Math.abs(roller.getX()-roller.getTrack().getMidpoint())<0.001){
+                if (Math.abs(roller.getX()-roller.getTrack().getMidpoint())<0.01){
                     result = Action.FORWARD;
                 }else {
                     result = Action.RIGHT;
                 }
             }else if (roller.getAction()==Action.LEFT){
-                if (Math.abs(roller.getX()-roller.getTrack().getMidpoint())<0.001){
+                if (Math.abs(roller.getX()-roller.getTrack().getMidpoint())<0.01){
                     result = Action.FORWARD;
                 }else {
                     result = Action.LEFT;
@@ -156,7 +167,11 @@ public class SamplePathPlanning extends PathPlanning{
             y+=this.worldInfo.getRollerSpeed();
         }else if (result == Action.BACKWARD){
             y-=this.worldInfo.getRollerSpeed();
-            y=Math.max(y,roller.getTrack().getBreakpoint());
+            if (roller.getIndex()==1||roller.getIndex()==3){
+                y = Math.max(y,roller.getTrack().getBreakpoint());
+            }else if (roller.getIndex()==2||roller.getIndex()==4){
+                y = Math.max(y,roller.getTrack().getReBreakpoint());
+            }
         }else if (result == Action.RIGHT){
             if (roller.getAction()!=Action.RIGHT){
                 y+=this.worldInfo.getFixedValueOfRollerTurning();

@@ -21,6 +21,7 @@ public class Roller extends StandardEntity{
     private List<Track> trackHistory;
     private Track track;
     private double preTrackY;
+
     public double getDirection() {
         return direction;
     }

@@ -49,12 +49,16 @@ public class SampleLoader {
                     if (i==3){
                         System.out.println("小车3的y坐标"+worldInfo.getRollerByIndex(i).getY());
                     }
+                    System.out.println();
                     System.out.println("输出小车"+i+" 位置："+rollerMessageOutput.getX()+", "+rollerMessageOutput.getY()+" 方向:"+rollerMessageOutput.getDirection());
 
                     if ((i==2||i==4)&&worldInfo.isReRollerBegin()==false){
                         continue;
                     }
-
+//                    if (i==1){
+//                        rollerMessageOutput.setX(0.9);
+//                        rollerMessageOutput.setY(10);
+//                    }
                     MqttMessage message = mqttDemo.createMessage(JSON.toJSONString(
                             pathPlanning.getOutput().getRollerMessageOutputByIndex(i)),false,1);
                     mqttDemo.publish("car"+i+"_trajectory", message);
@@ -78,7 +82,7 @@ public class SampleLoader {
                     }
                 }
             }
-            //你是个傻子
+            //
         }
     }
 

@@ -25,6 +25,7 @@ public class Track extends StandardEntity{
         super(id);
         this.breakpoint = 0;
         this.reBreakpoint = 0;
+        this.reForwardPoint = 0;
         this.backupBreakpoint = new LinkedList<Double>();
         this.backupReBreakpoint = new LinkedList<Double>();
         this.backupReForwardPoint = new LinkedList<Double>();
@@ -62,7 +63,7 @@ public class Track extends StandardEntity{
     }
 
     public void addBackupReForwardPoint(double reForwardPoint){
-        this.backupBreakpoint.offer(reForwardPoint);
+        this.backupReForwardPoint.offer(reForwardPoint);
     }
 
     public void updateReForwardPoint(){
