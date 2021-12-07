@@ -46,10 +46,10 @@ public class SampleLoader {
                 pathPlanning.calc();
                 for (int i =1;i<=worldInfo.getRollerNum();i++){
                     RollerMessageOutput rollerMessageOutput = pathPlanning.getOutput().getRollerMessageOutputByIndex(i);
-                    if (i==3){
-                        System.out.println("小车3的y坐标"+worldInfo.getRollerByIndex(i).getY());
-                    }
-                    System.out.println();
+//                    if (i==3){
+//                        System.out.println("小车3的y坐标"+worldInfo.getRollerByIndex(i).getY());
+//                    }
+//                    System.out.println();
                     System.out.println("输出小车"+i+" 位置："+rollerMessageOutput.getX()+", "+rollerMessageOutput.getY()+" 方向:"+rollerMessageOutput.getDirection());
 
                     if ((i==2||i==4)&&worldInfo.isReRollerBegin()==false){

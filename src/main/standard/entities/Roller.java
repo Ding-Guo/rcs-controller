@@ -62,7 +62,20 @@ public class Roller extends StandardEntity{
         this.actionHistory = new LinkedList<>();
         this.trackHistory = new LinkedList<>();
     }
-
+    public boolean isLeft(){
+        if (this.getIndex()==1||this.getIndex()==2){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    public boolean isRight(){
+        if (this.getIndex()==3||this.getIndex()==4){
+            return true;
+        }else {
+            return false;
+        }
+    }
     public double getX() {
         return x;
     }

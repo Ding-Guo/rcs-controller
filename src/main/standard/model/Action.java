@@ -6,7 +6,8 @@ public enum Action {
     BACKWARD("action:backward"),
 //    CHANG_TRACK("action:changTrack"),
     RIGHT("action:right"),
-    LEFT("action:left");
+    LEFT("action:left"),
+    PAUSE("action:pause");
     private String action;
 
     private Action(String action) {

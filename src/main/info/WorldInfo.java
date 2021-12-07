@@ -9,6 +9,7 @@ import main.standard.entities.Track;
 import main.standard.messages.Input;
 import main.standard.messages.RollerMessageInput;
 import main.standard.model.Action;
+import main.standard.model.Lock;
 
 import java.util.Collection;
 import java.util.EnumMap;
@@ -26,6 +27,7 @@ public class WorldInfo {
     private boolean reRollerBegin;
     //    private RollerMessageInput input;
     private Input input;
+    private Lock lock;
 
     public WorldInfo() {
         input = null;
@@ -34,6 +36,7 @@ public class WorldInfo {
 
     public WorldInfo(Config config){
         this.config = config;
+        this.lock = new Lock();
     }
 
     public void init(){
@@ -105,8 +108,8 @@ public class WorldInfo {
                     //得改。根据不同的车改。改完ok
                     if (roller.getIndex()==1||roller.getIndex()==3){
                         roller.getTrack().addBackupReForwardPoint(roller.getY());
-                        roller.getTrack().addBackupBreakpoint(roller.getY());
-                        roller.getTrack().addBackupReBreakpoint(roller.getY());
+                        roller.getTrack().addBackupBreakpoint(roller.getY()+5);
+                        roller.getTrack().addBackupReBreakpoint(roller.getY()+5);
                         //保证复压的车的第一次前进结点
                         if (roller.getTrack().getRollingTimes()==0){
                             roller.getTrack().updateReForwardPoint();
@@ -207,7 +210,10 @@ public class WorldInfo {
 //        }
     }
 
-//    public void merge(Action action){
+    public Lock getLock() {
+        return lock;
+    }
+    //    public void merge(Action action){
 //        if (this.paverY<this.getRoadLength()){
 //            this.paverY += paverSpeed;
 //        }

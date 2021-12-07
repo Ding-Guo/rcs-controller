@@ -7,6 +7,7 @@ import main.standard.entities.Roller;
 import main.standard.entities.StandardEntity;
 import main.standard.messages.Output;
 import main.standard.model.Action;
+import main.standard.model.Lock;
 
 import java.util.*;
 
@@ -70,17 +71,44 @@ public class SamplePathPlanning extends PathPlanning{
 
                 if (Math.abs(roller.getY()-roller.getTrack().getBreakpoint(roller))<0.1){
                     if (roller.getTrack().getIndex()==1){
+                        if (roller.isRight()){
+                            this.worldInfo.getLock().quit(roller);
+                        }
                         result = Action.RIGHT;
-                    }else if (((roller.getIndex()==1||roller.getIndex()==2)&&roller.getTrack().getIndex()==worldInfo.getLTrackNum())||((roller.getIndex()==3||roller.getIndex()==4)&&
+
+                    }else if (((roller.isLeft())&&roller.getTrack().getIndex()==worldInfo.getLTrackNum())||((roller.isRight())&&
                             roller.getTrack().getIndex()==worldInfo.getRTrackNum())){
+                        if (roller.isLeft()){
+                            this.worldInfo.getLock().quit(roller);
+                        }
                         result = Action.LEFT;
                     }else {
                         int newIndex = roller.getTrack().getIndex();
                         int oldIndex = roller.getTrackHistory().get(roller.getTrackHistory().size()-2).getIndex();
                         if (newIndex<oldIndex){
-                            result = Action.LEFT;
+                            if (roller.isRight()){
+                                Lock lock = this.worldInfo.getLock();
+                                if (lock.isAllow(roller)){
+                                    lock.access(roller);
+                                    result = Action.LEFT;
+                                }else {
+                                    result = Action.PAUSE;
+                                }
+                            }else {
+                                result = Action.LEFT;
+                            }
                         }else if (newIndex>oldIndex){
-                            result = Action.RIGHT;
+                            if (roller.isLeft()){
+                                Lock lock = this.worldInfo.getLock();
+                                if (lock.isAllow(roller)){
+                                    lock.access(roller);
+                                    result = Action.RIGHT;
+                                }else {
+                                    result = Action.PAUSE;
+                                }
+                            }else {
+                                result = Action.RIGHT;
+                            }
                         }else {
                             Logger.error("轨道序号出错了");
                         }
@@ -107,7 +135,9 @@ public class SamplePathPlanning extends PathPlanning{
                 Logger.error("压路机无动作,错误");
                 return this;
             }
-            this.generateOutput(result, roller);
+            if (result!=Action.PAUSE){
+                this.generateOutput(result, roller);
+            }
 //            System.out.println("位置:"+ roller.getX()+","+roller.getY()+"角度："+this.worldInfo.getInput().getDirection()+"  下一步动作为：" +result +"目标点："+this.output.getX()+","+this.output.getY()+
 //                    "  摊铺机位置："+this.worldInfo.getPaverY());
         }
